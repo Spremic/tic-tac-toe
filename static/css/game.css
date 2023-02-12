@@ -56,7 +56,15 @@ h1 {
 #winner span {
   font-size: 2.5rem;
 }
+#winMove {
+  display: flex;
+  justify-content: center;
+  
+}
 
+.move {
+  margin-right: 80px;
+}
 /* form */
 
 #addPlayer {
@@ -102,5 +110,4 @@ h1 {
     padding-left: 36px;
     padding-top: 32px;
   }
-
 }

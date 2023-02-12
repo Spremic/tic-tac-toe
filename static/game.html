@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic tac toe</title>
-    <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="stylesheet" href="/game.css" />
   </head>
   <body>
     <div id="parentContainer">
@@ -24,17 +24,22 @@
 
       <section id="winner">
         <div class="playerLoad1">
-          <img src="/static/img/149071.png" alt="player1 img" />
+          <img src="149071.png" alt="player1 img" />
           <p></p>
           <span class="player1Score">0</span>
         </div>
         <br />
         <br />
         <div class="playerLoad2">
-          <img src="/static/img/149071.png" alt="player 2 img" />
+          <img src="149071.png" alt="player 2 img" />
           <p></p>
           <span class="player2Score">0</span>
         </div>
+      </section>
+
+      <section id="winMove">
+        <div class="move"></div>
+        <div class="win"></div>
       </section>
     </div>
 
@@ -53,6 +58,6 @@
       </form>
     </div>
 
-    <script src="/static/script/index.js"></script>
+    <script src="/game.js"></script>
   </body>
 </html>

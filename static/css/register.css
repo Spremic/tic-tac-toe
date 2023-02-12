@@ -1,0 +1,23 @@
+* {
+  border: 0%;
+  margin: 0%;
+  box-sizing: border-box;
+}
+/* body {
+    /* background-color: #ffa07a ; */
+
+#container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+form div label {
+  display: block;
+}
+.error {
+  color: red;
+}
