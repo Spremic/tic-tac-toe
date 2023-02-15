@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic tac toe</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="user.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="tablets.png" alt="logo" />
+      </div>
+      <div class="userInformation">
+        <div class="options">
+          <i class="fa fa-cog" aria-hidden="true"></i>
+        </div>
+        <div class="friendsRequest">
+          <i class="fa fa-address-book-o" aria-hidden="true"></i>
+        </div>
+        <div class="user">
+          <i class="fa fa-user-o" aria-hidden="true"></i>
+        </div>
+      </div>
+    </header>
+    <div id="container">
+      <div class="leftGray">
+        <section id="leftList">
+          <h2 id="userName"></h2>
+          <div class="leftProfile">
+            <p>Profile</p>
+          </div>
+          <div class="leftGames">
+            <p>Games</p>
+          </div>
+          <div class="leftNotifications">
+            <p>Notifications</p>
+          </div>
+          <div class="leftHelp">
+            <p>Help & Support</p>
+          </div>
+        </section>
+      </div>
+      <section class="rightInformation">
+        <div class="allFriends informationDesing">
+          <!-- <h3>All friends:</h3> -->
+          <!-- <div class="user1 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Petar Vasic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+
+          <div class="user2 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Petrovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user3 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user4 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user5 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user6 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div> -->
+        </div>
+        <div class="border"></div>
+        <div class="onlineFriends informationDesing">
+          <!-- <h3>Online friends</h3> -->
+          <!-- <div class="user1 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Petar Vasic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+
+          <div class="user2 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Petrovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user3 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user4 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user5 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div>
+          <div class="user6 userDesing">
+            <div class="freindsIMG">
+              <img src="149071.png" alt="friend img" />
+            </div>
+            <div class="userNameDiv">
+              <p class="pUserName">Sava Savanovic</p>
+            </div>
+            <div class="divStatus">
+              <p class="status">Offline</p>
+            </div>
+            <div class="divChallange">
+              <button class="challange">Chalange!</button>
+            </div>
+          </div> -->
+        </div>
+        <div class="border"></div>
+        <div class="friendsRequest informationDesing">
+          <!-- <h3>Friends request</h3> -->
+          <div class="user1 divRequest"></div>
+          <div class="user2 divRequest"></div>
+          <div class="user3 divRequest"></div>
+          <div class="user4 divRequest"></div>
+          <div class="user5 divRequest"></div>
+          <div class="user6 divRequest"></div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>test</p>
+    </footer>
+
+    <script src="user.js"></script>
+  </body>
+</html>

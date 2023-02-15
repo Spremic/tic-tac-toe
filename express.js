@@ -95,3 +95,33 @@ app.post("/api/login", async (req, res) => {
     return res.json({ status: "password", password: "Pogresna sifra" });
   }
 });
+
+// get information from token
+app.post("/api/dynamicLoad", async (req, res) => {
+  const { token } = req.body;
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    const email = user.email;
+    const id = user.id;
+    const name = user.name;
+    const friends = user.friends;
+    const requestFriends = user.requestFriends;
+    return res.json({ status: "ok", email, id, name, friends, requestFriends });
+  } catch (err) {
+    console.log(err);
+    res.json({ status: "error", error: "error" });
+  }
+});
+
+//loda friends
+
+app.post("/api/loadFriends", async (req, res) => {
+  const { friends } = req.body;
+  const friendData = await user.findOne({ email: friends});
+  try {
+    const name = friendData.name;
+    return res.json({ status: "ok", name });
+  } catch (err) {
+    console.log(err);
+  }
+});
