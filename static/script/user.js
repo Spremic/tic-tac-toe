@@ -1,3 +1,16 @@
+let openSearch = document.querySelector(".divSearch i");
+let searchInput = document.querySelector("#search");
+let writeUsers = document.querySelector(".allUsers");
+
+//openSearch
+openSearch.addEventListener("click", () => {
+  if (searchInput.style.display === "none") {
+    searchInput.style.display = "grid";
+  } else {
+    searchInput.style.display = "none";
+  }
+});
+
 // load token
 window.addEventListener("load", dynamicLoad);
 async function dynamicLoad(e) {
@@ -16,6 +29,7 @@ async function dynamicLoad(e) {
   if (result.status === "ok") {
     writeUserName(result);
     writeFriends(result);
+    allUsers(result);
   }
 }
 
@@ -61,4 +75,36 @@ function writeUserName(result) {
   let userName = result.name;
   let writeUserName = document.querySelector("#userName");
   writeUserName.innerHTML = userName;
+}
+
+// function that writes all users in search
+async function allUsers(e) {
+  const allUsers = await fetch("/api/allNames", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => response.json());
+  // convert object to string
+  const allNames = allUsers.allUser.map((user) => user.name);
+  allNames.forEach((element) => {
+    writeUsers.innerHTML += `<div class="users">
+    <p class="usersName">${element}</p>
+    <p class="userEmail">dspremic1@gmail.com</p>
+    </div>`;
+  });
+}
+
+searchInput.addEventListener("input", searchFunction);
+function searchFunction() {
+  let e = searchInput.value.toLowerCase();
+  let collection = document.getElementsByClassName("usersName");
+  let div = document.querySelectorAll(".users");
+  for (i = 0; i < collection.length; i++) {
+    if (collection[i].innerHTML.toLowerCase().indexOf(e) > -1 && e !== "") {
+      div[i].style.display = "block";
+    } else {
+      div[i].style.display = "none";
+    }
+  }
 }

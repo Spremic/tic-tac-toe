@@ -113,14 +113,23 @@ app.post("/api/dynamicLoad", async (req, res) => {
   }
 });
 
-//loda friends
-
+//load friends
 app.post("/api/loadFriends", async (req, res) => {
   const { friends } = req.body;
-  const friendData = await user.findOne({ email: friends});
+  const friendData = await user.findOne({ email: friends });
   try {
     const name = friendData.name;
     return res.json({ status: "ok", name });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//send all names people to front
+app.get("/api/allNames", async (req, res) => {
+  try {
+    const allUser = await user.find({}, "name");
+    return res.json({ status: "ok", allUser });
   } catch (err) {
     console.log(err);
   }

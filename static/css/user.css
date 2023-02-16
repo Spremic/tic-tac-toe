@@ -32,6 +32,30 @@ header {
   cursor: pointer;
 }
 
+.allUsers {
+  position: absolute;
+
+  margin-top: 15px;
+  padding-left: 65px;
+
+  width: 20%;
+}
+.allUsers div {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.userEmail {
+  display: none;
+}
+
+.users {
+  display: none;
+}
+#search {
+  display: none;
+}
+
 #container {
   margin-top: 5px;
   display: flex;
