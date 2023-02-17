@@ -24,8 +24,6 @@ mongoose
     console.error(`Error connecting to the database. n${err}`);
   });
 
-const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
-
 const app = express();
 app.use(express.static(__dirname + "/static/css"));
 app.use(express.static(__dirname + "/static/script"));
@@ -33,9 +31,8 @@ app.use(express.static(__dirname + "/static/img"));
 app.use("/", express.static(path.join(__dirname, "static")));
 app.use(bodyParser.json());
 
-app.listen(port, () => {
-  console.log(`App is listening on port ${port}`);
-});
+const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
+
 //register
 app.post("/api/register", async (req, res) => {
   const {
@@ -44,6 +41,7 @@ app.post("/api/register", async (req, res) => {
     password: plainTextPassword,
     friends,
     requestFriends,
+    sendRequest,
   } = req.body;
 
   let emailCheck = await user.findOne({ email }).lean();
@@ -60,6 +58,7 @@ app.post("/api/register", async (req, res) => {
       password,
       friends,
       requestFriends,
+      sendRequest,
     });
     console.log(response);
   } catch (error) {
@@ -86,6 +85,7 @@ app.post("/api/login", async (req, res) => {
         email: emailCheck.email,
         friends: emailCheck.friends,
         requestFriends: emailCheck.requestFriends,
+        sendRequest: emailCheck.sendRequest,
       },
       JWT_SECRET
     );
@@ -106,7 +106,16 @@ app.post("/api/dynamicLoad", async (req, res) => {
     const name = user.name;
     const friends = user.friends;
     const requestFriends = user.requestFriends;
-    return res.json({ status: "ok", email, id, name, friends, requestFriends });
+    const sendRequest = user.sendRequest;
+    return res.json({
+      status: "ok",
+      email,
+      id,
+      name,
+      friends,
+      requestFriends,
+      sendRequest,
+    });
   } catch (err) {
     console.log(err);
     res.json({ status: "error", error: "error" });
@@ -119,7 +128,8 @@ app.post("/api/loadFriends", async (req, res) => {
   const friendData = await user.findOne({ email: friends });
   try {
     const name = friendData.name;
-    return res.json({ status: "ok", name });
+    const email = friendData.email;
+    return res.json({ status: "ok", name, email });
   } catch (err) {
     console.log(err);
   }
@@ -129,8 +139,52 @@ app.post("/api/loadFriends", async (req, res) => {
 app.get("/api/allNames", async (req, res) => {
   try {
     const allUser = await user.find({}, "name");
-    return res.json({ status: "ok", allUser });
+    const allEmail = await user.find({}, "email");
+    return res.json({ status: "ok", allUser, allEmail });
   } catch (err) {
     console.log(err);
   }
+});
+
+//function that adds friends with btn
+//emailSend je mejl kojem se salje zahtev
+//sendRequestUser je mejl koji je ulogovan tj onaj koji salje zahtev
+app.post("/api/sendRequest", async (req, res) => {
+  const { sendRequestUser, emailSend } = req.body;
+  try {
+    const currentUser = await user.findOne({ email: sendRequestUser });
+    if (currentUser.sendRequest.includes(emailSend)) {
+      return res.json({
+        status: "error",
+        message: "Friend request already sent",
+      });
+    }
+    if (sendRequestUser !== emailSend) {
+      await user.updateOne(
+        { email: sendRequestUser },
+        {
+          $push: { sendRequest: emailSend },
+        }
+      );
+      await user.updateOne(
+        { email: emailSend },
+        {
+          $push: { requestFriends: sendRequestUser },
+        }
+      );
+
+      return res.json({ status: "ok" });
+    } else {
+      return res.json({
+        status: "error",
+        message: "You are trying to add yourself as a friend",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.listen(port, () => {
+  console.log(`App is listening on port ${port}`);
 });

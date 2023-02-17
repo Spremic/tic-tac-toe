@@ -1,7 +1,7 @@
 let openSearch = document.querySelector(".divSearch i");
 let searchInput = document.querySelector("#search");
 let writeUsers = document.querySelector(".allUsers");
-
+let token = localStorage.getItem("token");
 //openSearch
 openSearch.addEventListener("click", () => {
   if (searchInput.style.display === "none") {
@@ -11,11 +11,13 @@ openSearch.addEventListener("click", () => {
   }
 });
 
+
+
+
 // load token
 window.addEventListener("load", dynamicLoad);
 async function dynamicLoad(e) {
   e.preventDefault();
-  let token = localStorage.getItem("token");
 
   const result = await fetch("./api/dynamicLoad", {
     method: "POST",
@@ -50,7 +52,8 @@ async function writeFriends(e) {
     }).then((response) => response.json());
     if (resultFriends.status === "ok") {
       let nameFriend = resultFriends.name;
-      console.log(nameFriend);
+      let email = resultFriends.email;
+      console.log(email);
 
       writeallFriends.innerHTML += ` <div class="user1 userDesing">
       <div class="freindsIMG">
@@ -58,6 +61,7 @@ async function writeFriends(e) {
       </div>
       <div class="userNameDiv">
         <p class="pUserName">${nameFriend}</p>
+        <p class="userEmail">${email} </p>
       </div>
       <div class="divStatus">
         <p class="status">Offline</p>
@@ -87,15 +91,17 @@ async function allUsers(e) {
   }).then((response) => response.json());
   // convert object to string
   const allNames = allUsers.allUser.map((user) => user.name);
-  allNames.forEach((element) => {
+  const allEmails = allUsers.allEmail.map((mail) => mail.email);
+  for (i = 0; i < allNames.length; i++) {
     writeUsers.innerHTML += `<div class="users">
-    <p class="usersName">${element}</p>
-    <p class="userEmail">dspremic1@gmail.com</p>
+    <p class="usersName">${allNames[i]}</p>
+    <p class="userEmail">${allEmails[i]}</p>
+    <button class="sendRequest">Add</button>
     </div>`;
-  });
+  }
 }
 
-searchInput.addEventListener("input", searchFunction);
+searchInput.addEventListener("keyup", searchFunction);
 function searchFunction() {
   let e = searchInput.value.toLowerCase();
   let collection = document.getElementsByClassName("usersName");
@@ -106,5 +112,54 @@ function searchFunction() {
     } else {
       div[i].style.display = "none";
     }
+  }
+}
+
+//functions that adds friends with btn
+const parentElement = document.querySelector(".allUsers");
+parentElement.addEventListener("click", (event) => {
+  let target = event.target;
+  if (target.classList.contains("sendRequest")) {
+    let btnParent = target.parentNode;
+    let findEmail = btnParent.querySelector(".userEmail").innerHTML;
+    dynmicLoadLoginUser(findEmail);
+  }
+});
+
+//send file to "sendRequest"
+async function dynmicLoadLoginUser(e) {
+  const fetchToken = await fetch("./api/dynamicLoad", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token,
+    }),
+  }).then((response) => response.json());
+  if (fetchToken.status === "ok") {
+    let sendRequestUser = fetchToken.email;
+    let emailSend = e;
+    console.log(sendRequestUser);
+    sendRequest(sendRequestUser, emailSend);
+  }
+}
+
+async function sendRequest(sendRequestUser, emailSend) {
+  const send = await fetch("/api/sendRequest", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sendRequestUser,
+      emailSend,
+    }),
+  }).then((response) => response.json());
+  if (send.status === "ok") {
+    alert("Dodali ste prijatelja");
+  }
+  if (send.status === "error") {
+    alert(send.message);
   }
 }

@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     friends: [String],
     requestFriends: [String],
+    sendRequest: [String],
   },
   {
     collection: "users",
