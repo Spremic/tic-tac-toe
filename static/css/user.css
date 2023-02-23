@@ -52,6 +52,19 @@ header {
 .users {
   display: none;
 }
+.require {
+  display: flex;
+}
+.require button {
+  margin-left: -5px;
+  margin-right: 10px;
+  background-color: aquamarine;
+  border: none;
+  border-radius: 8px;
+  width: 60px;
+  height: 30px;
+  cursor: pointer;
+}
 #search {
   display: none;
 }
@@ -98,7 +111,7 @@ header {
 .rightInformation {
   width: 80%;
   float: right;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .informationDesing {
   display: flex;
@@ -128,7 +141,14 @@ header {
   background-color: aqua;
   cursor: pointer;
 }
-
+.emptyMessage {
+  position: relative;
+  left: 50%;
+  top: 0%;
+  transform: translate(-50%, 0%);
+  font-size: 30px;
+  color: rgba(161, 144, 144, 0.603);
+}
 .border {
   margin-top: 20px;
   border: 1px solid blue;

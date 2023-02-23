@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const user = require("./model/userSchema.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { updateOne } = require("./model/userSchema.js");
 const port = process.env.PORT || 3000;
 
 const url = `mongodb+srv://spremic:H3bLeFK9VSGR82bA@cluster0.zigapfi.mongodb.net/?retryWrites=true&w=majorit`;
@@ -80,12 +81,7 @@ app.post("/api/login", async (req, res) => {
   if (await bcrypt.compare(password, emailCheck.password)) {
     const token = jwt.sign(
       {
-        id: emailCheck._id,
-        name: emailCheck.name,
         email: emailCheck.email,
-        friends: emailCheck.friends,
-        requestFriends: emailCheck.requestFriends,
-        sendRequest: emailCheck.sendRequest,
       },
       JWT_SECRET
     );
@@ -100,13 +96,14 @@ app.post("/api/login", async (req, res) => {
 app.post("/api/dynamicLoad", async (req, res) => {
   const { token } = req.body;
   try {
-    const user = jwt.verify(token, JWT_SECRET);
-    const email = user.email;
-    const id = user.id;
-    const name = user.name;
-    const friends = user.friends;
-    const requestFriends = user.requestFriends;
-    const sendRequest = user.sendRequest;
+    const userToken = jwt.verify(token, JWT_SECRET);
+    const email = userToken.email;
+    let emailCheck = await user.findOne({ email }).lean();
+    const id = emailCheck.id;
+    const name = emailCheck.name;
+    const friends = emailCheck.friends;
+    const requestFriends = emailCheck.requestFriends;
+    const sendRequest = emailCheck.sendRequest;
     return res.json({
       status: "ok",
       email,
@@ -130,6 +127,107 @@ app.post("/api/loadFriends", async (req, res) => {
     const name = friendData.name;
     const email = friendData.email;
     return res.json({ status: "ok", name, email });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// request friends
+
+app.post("/api/allRequest", async (req, res) => {
+  const { request } = req.body;
+  const findUser = await user.findOne({ email: request });
+  try {
+    const email = findUser.email;
+    const name = findUser.name;
+    return res.json({ status: "ok", email, name });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//all sent
+
+app.post("/api/allSent", async (req, res) => {
+  const { send } = req.body;
+  const findUser = await user.findOne({ email: send });
+  try {
+    const email = findUser.email;
+    const name = findUser.name;
+    return res.json({ status: "ok", email, name });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// accept friens
+// acceptUser je onaj koji prihvata
+// email je onaj kome se prihvata zahtev
+app.post("/api/accept", async (req, res) => {
+  const { email, acceptUser } = req.body;
+  try {
+    const result = await user.updateOne(
+      { email: acceptUser },
+      {
+        $push: { friends: email },
+        $pull: { requestFriends: email },
+      }
+    );
+    const result2 = await user.updateOne(
+      { email: email },
+      {
+        $push: { friends: acceptUser },
+        $pull: { sendRequest: acceptUser },
+      }
+    );
+    return res.json({ status: "ok", acceptUser, email });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// delete request friends
+app.post("/api/deleteReq", async (req, res) => {
+  const { email, acceptUser } = req.body;
+  try {
+    const result = await user.updateOne(
+      { email: acceptUser },
+      {
+        $pull: { requestFriends: email },
+      }
+    );
+    const result2 = await user.updateOne(
+      { email: email },
+      {
+        $pull: { sendRequest: acceptUser },
+      }
+    );
+    return res.json({ status: "ok", acceptUser, email });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+//unsend
+//email je onaj kome se prihvata
+app.post("/api/unsend", async (req, res) => {
+  const { email, acceptUser } = req.body;
+  try {
+    const result = await user.updateOne(
+      { email: acceptUser },
+      {
+        $pull: { sendRequest: email },
+      }
+    );
+    const result2 = await user.updateOne(
+      { email: email },
+      {
+        $pull: { requestFriends: acceptUser },
+      }
+    );
+    return res.json({ status: "ok" });
   } catch (err) {
     console.log(err);
   }
