@@ -2,7 +2,7 @@ let openSearch = document.querySelector(".divSearch i");
 let searchInput = document.querySelector("#search");
 let writeUsers = document.querySelector(".allUsers");
 let token = localStorage.getItem("token");
-const socket = io();
+// const socket = io();
 // socket.on("connect", () => {
 //   console.log("Radi");
 // });
