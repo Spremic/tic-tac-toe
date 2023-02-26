@@ -36,19 +36,19 @@ app.use("/", express.static(path.join(__dirname, "static")));
 app.use(bodyParser.json());
 const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
 //rout
-app.get("/user", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/user.html"));
-});
-app.get("/register", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/register.html"));
-});
-app.get("/profile", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/user.html"));
-});
+// app.get("/user", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/static/user.html"));
+// });
+// app.get("/register", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/static/register.html"));
+// });
+// app.get("/profile", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/static/user.html"));
+// });
 
-app.get("/game", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/game.html"));
-});
+// app.get("/game", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/static/game.html"));
+// });
 
 //register
 app.post("/api/register", async (req, res) => {
