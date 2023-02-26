@@ -118,13 +118,6 @@ app.post("/api/dynamicLoad", async (req, res) => {
     const friends = emailCheck.friends;
     const requestFriends = emailCheck.requestFriends;
     const sendRequest = emailCheck.sendRequest;
-    // io.on("connection", (socket) => {
-    //   console.log(`Klijent ${name} povezan`);
-
-    //   socket.on("disconnect", () => {
-    //     console.log("Klijent je odjavio");
-    //   });
-    // });
     return res.json({
       status: "ok",
       email,
