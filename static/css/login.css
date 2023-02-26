@@ -1,5 +1,5 @@
 * {
-  border: 0%;
+  padding: 0%;
   margin: 0%;
   box-sizing: border-box;
 }
@@ -7,18 +7,20 @@ a:link {
   text-decoration: none;
 }
 
+html,
 body {
   background: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
-
   height: 100vh;
+  width: 100vw;
   font-family: "Montserrat", sans-serif;
+  overflow-x: none;
 }
 
 #container {
   display: grid;
   align-items: center;
   place-content: center;
-  position: relative;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -84,30 +86,26 @@ form button {
   cursor: pointer;
 }
 
-@media only screen and (min-width: 407px) and (max-width: 505px) {
+@media only screen and (max-width: 512px) {
   body {
     background: #9face6;
   }
+
   #container {
-    width: 90%;
+    width: 95%;
   }
 }
 
-@media only screen and (max-width: 406px) {
-  body {
-    background: #9face6;
+@media only screen and (max-width: 320px) {
+  h1 {
+    left: 15%;
   }
   #container {
-    position: relative;
-    width: 350px;
-
-    left: 0%;
-    margin-left: 200px;
-  }
+  width: 95%;
+}
+#container form input {
+  width: 250px;
 }
 
-@media only screen and (max-width: 350px) {
-  #container {
-    opacity: 1;
-  }
+
 }
