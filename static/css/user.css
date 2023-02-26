@@ -146,7 +146,7 @@ header {
   left: 50%;
   top: 0%;
   transform: translate(-50%, 0%);
-  font-size: 30px;
+  font-size: 1.3rem;
   color: rgba(161, 144, 144, 0.603);
 }
 .border {

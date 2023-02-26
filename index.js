@@ -6,6 +6,7 @@ const user = require("./model/userSchema.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { updateOne } = require("./model/userSchema.js");
+
 const port = process.env.PORT || 3000;
 
 const url = `mongodb+srv://spremic:H3bLeFK9VSGR82bA@cluster0.zigapfi.mongodb.net/?retryWrites=true&w=majorit`;
@@ -26,13 +27,28 @@ mongoose
   });
 
 const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 app.use(express.static(__dirname + "/static/css"));
 app.use(express.static(__dirname + "/static/script"));
 app.use(express.static(__dirname + "/static/img"));
 app.use("/", express.static(path.join(__dirname, "static")));
 app.use(bodyParser.json());
-
 const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
+//rout
+app.get("/user", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/user.html"));
+});
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/register.html"));
+});
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/user.html"));
+});
+
+app.get("/game", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/game.html"));
+});
 
 //register
 app.post("/api/register", async (req, res) => {
@@ -95,6 +111,7 @@ app.post("/api/login", async (req, res) => {
 // get information from token
 app.post("/api/dynamicLoad", async (req, res) => {
   const { token } = req.body;
+
   try {
     const userToken = jwt.verify(token, JWT_SECRET);
     const email = userToken.email;
@@ -104,6 +121,13 @@ app.post("/api/dynamicLoad", async (req, res) => {
     const friends = emailCheck.friends;
     const requestFriends = emailCheck.requestFriends;
     const sendRequest = emailCheck.sendRequest;
+    // io.on("connection", (socket) => {
+    //   console.log(`Klijent ${name} povezan`);
+
+    //   socket.on("disconnect", () => {
+    //     console.log("Klijent je odjavio");
+    //   });
+    // });
     return res.json({
       status: "ok",
       email,
@@ -257,6 +281,20 @@ app.post("/api/sendRequest", async (req, res) => {
         message: "Friend request already sent",
       });
     }
+
+    if (currentUser.requestFriends.includes(emailSend)) {
+      return res.json({
+        status: "error",
+        message: "A user has sent you a friend request",
+      });
+    }
+
+    if (currentUser.friends.includes(emailSend)) {
+      return res.json({
+        status: "error",
+        message: "you are already friends",
+      });
+    }
     if (sendRequestUser !== emailSend) {
       await user.updateOne(
         { email: sendRequestUser },
@@ -283,6 +321,6 @@ app.post("/api/sendRequest", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+http.listen(port, () => {
   console.log(`App is listening on port ${port}`);
 });

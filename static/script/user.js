@@ -2,15 +2,10 @@ let openSearch = document.querySelector(".divSearch i");
 let searchInput = document.querySelector("#search");
 let writeUsers = document.querySelector(".allUsers");
 let token = localStorage.getItem("token");
-//----------------------openSearch--------------
-openSearch.addEventListener("click", () => {
-  if (searchInput.style.display === "none") {
-    searchInput.style.display = "grid";
-  } else {
-    searchInput.style.display = "none";
-  }
-});
-
+const socket = io();
+// socket.on("connect", () => {
+//   console.log("Radi");
+// });
 //------------------ load token--------------
 
 window.addEventListener("load", dynamicLoad);
@@ -29,9 +24,9 @@ async function dynamicLoad(e) {
   if (result.status === "ok") {
     writeUserName(result);
     writeFriends(result);
-    allUsers(result);
     requestFriends(result);
     sendFriends(result);
+    allUsers(result);
   }
 }
 
@@ -167,6 +162,26 @@ async function sendFriends(e) {
   }
 }
 
+// -----------function that writes all users in search-------------
+async function allUsers(e) {
+  const allUsers = await fetch("/api/allNames", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => response.json());
+  // convert object to string
+  const allNames = allUsers.allUser.map((user) => user.name);
+  const allEmails = allUsers.allEmail.map((mail) => mail.email);
+  for (let i = 0; i < allNames.length; i++) {
+    writeUsers.innerHTML += `<div class="users">
+    <p class="usersName">${allNames[i]}</p>
+    <p class="userEmail">${allEmails[i]}</p>
+    <button class="sendRequest">Add</button>
+    </div>`;
+  }
+}
+
 // ----------------function that accept and delete request friends----------------
 const parentElementBTN = document.querySelector(".friendsRequestLoad");
 parentElementBTN.addEventListener("click", async (event) => {
@@ -282,40 +297,6 @@ async function unsend(email, acceptUser) {
   }
 }
 
-// -----------function that writes all users in search-------------
-async function allUsers(e) {
-  const allUsers = await fetch("/api/allNames", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((response) => response.json());
-  // convert object to string
-  const allNames = allUsers.allUser.map((user) => user.name);
-  const allEmails = allUsers.allEmail.map((mail) => mail.email);
-  for (i = 0; i < allNames.length; i++) {
-    writeUsers.innerHTML += `<div class="users">
-    <p class="usersName">${allNames[i]}</p>
-    <p class="userEmail">${allEmails[i]}</p>
-    <button class="sendRequest">Add</button>
-    </div>`;
-  }
-}
-
-searchInput.addEventListener("keyup", searchFunction);
-function searchFunction() {
-  let e = searchInput.value.toLowerCase();
-  let collection = document.getElementsByClassName("usersName");
-  let div = document.querySelectorAll(".users");
-  for (i = 0; i < collection.length; i++) {
-    if (collection[i].innerHTML.toLowerCase().indexOf(e) > -1 && e !== "") {
-      div[i].style.display = "block";
-    } else {
-      div[i].style.display = "none";
-    }
-  }
-}
-
 //functions that adds friends with btn
 const parentElement = document.querySelector(".allUsers");
 parentElement.addEventListener("click", (event) => {
@@ -364,3 +345,26 @@ async function sendRequest(sendRequestUser, emailSend) {
     alert(send.message);
   }
 }
+
+searchInput.addEventListener("keyup", searchFunction);
+function searchFunction() {
+  let e = searchInput.value.toLowerCase();
+  let collection = document.getElementsByClassName("usersName");
+  let div = document.querySelectorAll(".users");
+  for (i = 0; i < collection.length; i++) {
+    if (collection[i].innerHTML.toLowerCase().indexOf(e) > -1 && e !== "") {
+      div[i].style.display = "block";
+    } else {
+      div[i].style.display = "none";
+    }
+  }
+}
+
+//----------------------openSearch--------------
+openSearch.addEventListener("click", () => {
+  if (searchInput.style.display === "none") {
+    searchInput.style.display = "grid";
+  } else {
+    searchInput.style.display = "none";
+  }
+});

@@ -3,42 +3,111 @@
   margin: 0%;
   box-sizing: border-box;
 }
-/* body {
-  /* background-color: #ffa07a ; */
+a:link {
+  text-decoration: none;
+}
+
+body {
+  background: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
+
+  height: 100vh;
+  font-family: "Montserrat", sans-serif;
+}
 
 #container {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
-  position: absolute;
+  place-content: center;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  height: 500px;
+  width: 500px;
+  background: linear-gradient(0deg, #ffdee9 0%, #b5fffc 100%);
+  opacity: 0.9;
+  border-radius: 45px;
 }
+h1 {
+  position: relative;
+  left: 20%;
+  top: 0%;
+  transform: translate(0%, -130%);
+  color: rgb(245, 63, 63);
+}
+
 form div label {
   display: block;
   margin-bottom: 3px;
+  color: rgb(160, 160, 160);
 }
 form div {
   margin-top: 10px;
 }
 form h2 {
-  color: blue;
+  color: rgb(201, 200, 200);
   margin-bottom: 20px;
+  display: none;
 }
 form input {
   width: 300px;
-  height: 40px;
-
-  border-radius: 5px;
+  height: 60px;
+  border: none;
+  border-radius: 26px;
+  padding-left: 12px;
+  margin-left: -8px;
+  margin-bottom: 20px;
 }
-
+input:focus {
+  outline: none;
+}
+form p {
+  color: rgb(160, 160, 160);
+}
+form span a {
+  font-weight: bold;
+  color: royalblue;
+  cursor: pointer;
+}
 form button {
-  margin-top: 10px;
-  width: 80px;
-  height: 30px;
-  background-color: aquamarine;
+  position: relative;
+  left: 47.7%;
+  top: 0%;
+  transform: translate(-50%, 90%);
+  margin-top: 5px;
+  width: 120px;
+  height: 40px;
+  background-color: #9018dbb4;
+  color: whitesmoke;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+
+@media only screen and (min-width: 407px) and (max-width: 505px) {
+  body {
+    background: #9face6;
+  }
+  #container {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 406px) {
+  body {
+    background: #9face6;
+  }
+  #container {
+    position: relative;
+    width: 350px;
+
+    left: 0%;
+    margin-left: 200px;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  #container {
+    opacity: 1;
+  }
 }

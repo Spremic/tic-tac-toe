@@ -9,9 +9,7 @@
   </head>
   <body>
     <div id="container">
-      <!-- <div class="logo">
-        <img src="/img/Screenshot_2.png" alt="logo" />
-      </div> -->
+      <h1>Tic tac toe</h1>
       <form id="formLogin" class="formDesing">
         <h2>Login</h2>
         <div class="loginInputContainer InputContainerDesing">
@@ -25,7 +23,7 @@
             />
             <p id="loginMailError" class="error"></p>
           </div>
-          <br />
+
           <div>
             <label for="passwordLogin">Sifra*</label>
             <input
@@ -36,12 +34,16 @@
             />
             <p id="loginPassError" class="error"></p>
           </div>
-          <p>Nemate nalog? <span>Registruj se</span></p>
+          <p>
+            Nemate nalog?
+            <span><a href="/register"> Registruj se</a></span>
+          </p>
         </div>
 
         <button type="submit">Uloguj se</button>
       </form>
     </div>
+
     <script src="login.js"></script>
   </body>
 </html>
