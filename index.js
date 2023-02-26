@@ -5,9 +5,27 @@ const mongoose = require("mongoose");
 const user = require("./model/userSchema.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { updateOne } = require("./model/userSchema.js");
-
 const port = process.env.PORT || 3000;
+const app = express();
+
+app.use(express.static(__dirname + "/static/css"));
+app.use(express.static(__dirname + "/static/script"));
+app.use(express.static(__dirname + "/static/img"));
+app.use("/", express.static(path.join(__dirname, "static")));
+app.use(bodyParser.json());
+app.get("/user", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/user.html"));
+});
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/register.html"));
+});
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/user.html"));
+});
+
+app.get("/game", (req, res) => {
+  res.sendFile(path.join(__dirname, "/static/game.html"));
+});
 
 const url = `mongodb+srv://spremic:H3bLeFK9VSGR82bA@cluster0.zigapfi.mongodb.net/?retryWrites=true&w=majorit`;
 
@@ -26,29 +44,8 @@ mongoose
     console.error(`Error connecting to the database. n${err}`);
   });
 
-const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
-app.use(express.static(__dirname + "/static/css"));
-app.use(express.static(__dirname + "/static/script"));
-app.use(express.static(__dirname + "/static/img"));
-app.use("/", express.static(path.join(__dirname, "static")));
-app.use(bodyParser.json());
 const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
 //rout
-app.get("/user", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/user.html"));
-});
-app.get("/register", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/register.html"));
-});
-app.get("/profile", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/user.html"));
-});
-
-app.get("/game", (req, res) => {
-  res.sendFile(path.join(__dirname, "/static/game.html"));
-});
 
 //register
 app.post("/api/register", async (req, res) => {
@@ -321,6 +318,6 @@ app.post("/api/sendRequest", async (req, res) => {
   }
 });
 
-http.listen(port, () => {
+app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
 });
