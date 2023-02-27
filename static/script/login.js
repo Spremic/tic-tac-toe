@@ -18,6 +18,6 @@ async function login(e) {
 
   if (result.status === "ok") {
     localStorage.setItem("token", result.token);
-    document.location = "game.html";
+    document.location = "/profile";
   }
 }

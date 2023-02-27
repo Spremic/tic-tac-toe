@@ -311,6 +311,12 @@ app.post("/api/sendRequest", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
+});
+const io = require("socket.io")(server);
+
+io.on("connection", (socket) => {
+
+  console.log("korisnik ulogovan");
 });
