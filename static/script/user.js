@@ -1,8 +1,10 @@
 let openSearch = document.querySelector(".divSearch i");
 let searchInput = document.querySelector("#search");
 let writeUsers = document.querySelector(".allUsers");
+let jwtEmail = document.querySelector(".jwtEmail");
 let token = localStorage.getItem("token");
-const socket = io.connect("http://localhost:3000");
+
+const socket = io.connect("https://tic-tac-toe-sepia-one.vercel.app/");
 
 //------------------ load token--------------
 
@@ -31,8 +33,10 @@ async function dynamicLoad(e) {
 //------------function that writes the username of the user----------
 function writeUserName(result) {
   let userName = result.name;
+  let email = result.email;
   let writeUserName = document.querySelector("#userName");
   writeUserName.innerHTML = userName;
+  jwtEmail.innerHTML = email;
 }
 
 //---------------function that lists all friends----------------
@@ -358,11 +362,72 @@ function searchFunction() {
   }
 }
 
-//----------------------openSearch--------------
-openSearch.addEventListener("click", () => {
-  if (searchInput.style.display === "none") {
-    searchInput.style.display = "grid";
-  } else {
-    searchInput.style.display = "none";
+//chalange
+//player 1 je onaj igrac koji izaziva
+//player 2 je onaj igrac koji je izazvan
+let friendContainer = document.querySelector(".allFriends");
+friendContainer.addEventListener("click", challenge);
+async function challenge(e) {
+  let target = e.target;
+  if (target.classList.contains("challange")) {
+    let parent = target.parentNode;
+    let parentParent = parent.parentNode;
+    let player2 = parentParent.querySelector(".userEmail").innerHTML;
+    const result = await fetch("/api/dynamicLoad", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token,
+      }),
+    }).then((response) => response.json());
+    if (result.status === "ok") {
+      let player1 = result.email;
+      sendChalange(player1, player2.trim());
+    }
   }
-});
+}
+
+//ako je plejer test plejer 2 jednak sa plejer 2 ti uradi tjj prosledi mu ALERt
+
+async function sendChalange(player1, player2) {
+  let testPlayer2 = jwtEmail.innerHTML;
+  socket.emit("new_messageCL", {
+    izazivac: player1,
+    player: player2,
+    poruka: "Poslao vam je poruku",
+  });
+  socket.on("new_messageSR", (data) => {
+    if (data.player === testPlayer2) {
+      alert(data.poruka + data.chalenger);
+    }
+  });
+
+  // const result = await fetch("/api/sendChalange", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({
+  //     player1,
+  //     player2,
+  //   }),
+  // }).then((response) => response.json());
+  // if (result.status === "ok") {
+  //   console.log("radi");
+  // }
+  // if (result.status === "error") {
+  //   alert(result.error);
+  // }
+}
+
+//----------------------openSearch--------------
+if (openSearch) {
+  const toggleSearchInputStyle = () => {
+    searchInput.style.display =
+      searchInput.style.display === "none" ? "grid" : "none";
+  };
+  openSearch.addEventListener("click", toggleSearchInputStyle);
+  searchInput.style.display = "none";
+}

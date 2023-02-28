@@ -7,6 +7,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 3000;
 const app = express();
+let server = app.listen(port, () => {
+  console.log(`App is listening on port ${port}`);
+});
+
+const io = require("socket.io")(server);
 
 app.use(express.static(__dirname + "/static/css"));
 app.use(express.static(__dirname + "/static/script"));
@@ -46,6 +51,15 @@ mongoose
 
 const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
 //rout
+io.on("connection", (socket) => {
+  socket.on("new_messageCL", (data) => {
+    io.sockets.emit("new_messageSR", {
+      chalenger: data.izazivac,
+      player: data.player,
+      poruka: data.poruka,
+    });
+  });
+});
 
 //register
 app.post("/api/register", async (req, res) => {
@@ -56,6 +70,7 @@ app.post("/api/register", async (req, res) => {
     friends,
     requestFriends,
     sendRequest,
+    socketId,
   } = req.body;
 
   let emailCheck = await user.findOne({ email }).lean();
@@ -73,6 +88,7 @@ app.post("/api/register", async (req, res) => {
       friends,
       requestFriends,
       sendRequest,
+      socketId,
     });
     console.log(response);
   } catch (error) {
@@ -87,6 +103,11 @@ app.post("/api/login", async (req, res) => {
 
   //email validacija
   let emailCheck = await user.findOne({ email }).lean();
+  let addSocket = await user.updateOne(
+    { email: emailCheck.email },
+    { $set: { socketId: emailCheck.email } }
+  );
+
   if (!emailCheck) {
     return res.json({ status: "mail", mail: "Nepostojeca email adresa" });
   }
@@ -95,6 +116,7 @@ app.post("/api/login", async (req, res) => {
     const token = jwt.sign(
       {
         email: emailCheck.email,
+        socket: email,
       },
       JWT_SECRET
     );
@@ -118,6 +140,8 @@ app.post("/api/dynamicLoad", async (req, res) => {
     const friends = emailCheck.friends;
     const requestFriends = emailCheck.requestFriends;
     const sendRequest = emailCheck.sendRequest;
+    const socketId = emailCheck.socketId;
+
     return res.json({
       status: "ok",
       email,
@@ -126,6 +150,7 @@ app.post("/api/dynamicLoad", async (req, res) => {
       friends,
       requestFriends,
       sendRequest,
+      socketId,
     });
   } catch (err) {
     console.log(err);
@@ -311,12 +336,33 @@ app.post("/api/sendRequest", async (req, res) => {
   }
 });
 
-let server = app.listen(port, () => {
-  console.log(`App is listening on port ${port}`);
-});
-const io = require("socket.io")(server);
+console.log("korisnik tu");
+app.post("/api/sendChalange", async (req, res) => {
+  const { player1, player2 } = req.body;
 
-io.on("connection", (socket) => {
+  //   try {
+  //     // Dohvat "socket id" vrijednosti povezane s e-mail adresom "player2"
+  //     const findEmail = await user.findOne({ email: player2 }).lean();
+  //     if (!findEmail) {
+  //       return res.status(400).json({
+  //         status: "error",
+  //         error: "Korisnik sa ovom email adresom nije registrovan.",
+  //       });
+  //     }
+  //     if (!findEmail.socketId) {
+  //       return res.status(400).json({
+  //         status: "error",
+  //         error: "Korisnik sa ovom email adresom nije povezan na socket.",
+  //       });
+  //     }
 
-  console.log("korisnik ulogovan");
+  //     const socket = findEmail.socketId;
+
+  //     // Emitiranje događaja samo na utičnicu (socket) povezanu s korisnikom "player2"
+  //     io.to(socket).emit("new_messageSR", { message: "proba" });
+
+  //     return res.json({ status: "ok" });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
 });
