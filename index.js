@@ -52,8 +52,8 @@ mongoose
 const JWT_SECRET = "HASGDHGQWEDQGWEHDAS~!@ew#$#56%$^%yhfgjhjrtrhrhtRHSFSfsdf";
 //rout
 io.on("connection", (socket) => {
-  socket.on("new_messageCL", (data) => {
-    io.sockets.emit("new_messageSR", {
+  socket.on("new_challangeCL", (data) => {
+    io.sockets.emit("new_challangeSR", {
       chalenger: data.izazivac,
       player: data.player,
       poruka: data.poruka,
@@ -334,35 +334,4 @@ app.post("/api/sendRequest", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});
-
-console.log("korisnik tu");
-app.post("/api/sendChalange", async (req, res) => {
-  const { player1, player2 } = req.body;
-
-  //   try {
-  //     // Dohvat "socket id" vrijednosti povezane s e-mail adresom "player2"
-  //     const findEmail = await user.findOne({ email: player2 }).lean();
-  //     if (!findEmail) {
-  //       return res.status(400).json({
-  //         status: "error",
-  //         error: "Korisnik sa ovom email adresom nije registrovan.",
-  //       });
-  //     }
-  //     if (!findEmail.socketId) {
-  //       return res.status(400).json({
-  //         status: "error",
-  //         error: "Korisnik sa ovom email adresom nije povezan na socket.",
-  //       });
-  //     }
-
-  //     const socket = findEmail.socketId;
-
-  //     // Emitiranje događaja samo na utičnicu (socket) povezanu s korisnikom "player2"
-  //     io.to(socket).emit("new_messageSR", { message: "proba" });
-
-  //     return res.json({ status: "ok" });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
 });

@@ -4,7 +4,7 @@ let writeUsers = document.querySelector(".allUsers");
 let jwtEmail = document.querySelector(".jwtEmail");
 let token = localStorage.getItem("token");
 
-const socket = io.connect("https://tic-tac-toe-sepia-one.vercel.app/");
+const socket = io.connect("http://localhost:3000");
 
 //------------------ load token--------------
 
@@ -373,54 +373,60 @@ async function challenge(e) {
     let parent = target.parentNode;
     let parentParent = parent.parentNode;
     let player2 = parentParent.querySelector(".userEmail").innerHTML;
-    const result = await fetch("/api/dynamicLoad", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token,
-      }),
-    }).then((response) => response.json());
-    if (result.status === "ok") {
-      let player1 = result.email;
-      sendChalange(player1, player2.trim());
-    }
+
+    let player1 = jwtEmail.innerHTML;
+    sendChalange(player1, player2.trim());
   }
 }
 
 //ako je plejer test plejer 2 jednak sa plejer 2 ti uradi tjj prosledi mu ALERt
 
+let acceptChalangeContainer = document.querySelector(".acceptChalange");
 async function sendChalange(player1, player2) {
   let testPlayer2 = jwtEmail.innerHTML;
-  socket.emit("new_messageCL", {
+  socket.emit("new_challangeCL", {
     izazivac: player1,
     player: player2,
-    poruka: "Poslao vam je poruku",
+    poruka: "Izazvao Vas je:",
   });
-  socket.on("new_messageSR", (data) => {
+  socket.on("new_challangeSR", (data) => {
     if (data.player === testPlayer2) {
-      alert(data.poruka + data.chalenger);
+      // alert(`${data.poruka} ${data.chalenger}`);
+      acceptChalangeContainer.innerHTML = `<div class="acceptChalangeContainer">
+      <div class="chalangeIMG">
+        <img src="149071.png" alt="SLika izazivaca" />
+      </div>
+      <div class="nameChallenger">
+        <div class="name">
+          <p>${data.poruka} ${data.chalenger} </p>
+          <p class="userEmail">pero</p>
+        </div>
+      </div>
+      <div class="flexContainer">
+        <button class="acceptChalangeBTN">Accept</button>
+        <button class="deleteChalangeBTN">Reject</button>
+      </div>
+    </div>
+      `;
     }
   });
-
-  // const result = await fetch("/api/sendChalange", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({
-  //     player1,
-  //     player2,
-  //   }),
-  // }).then((response) => response.json());
-  // if (result.status === "ok") {
-  //   console.log("radi");
-  // }
-  // if (result.status === "error") {
-  //   alert(result.error);
-  // }
 }
+
+//accept and reject
+acceptChalangeContainer.addEventListener("click", (e) => {
+  let event = e.target;
+
+  //accept
+  if (event.classList.contains("acceptChalangeBTN")) {
+    location.href = "/game";
+  }
+
+  //reject
+  if (event.classList.contains("deleteChalangeBTN")) {
+    let deleteDiv = document.querySelector(".acceptChalangeContainer");
+    deleteDiv.remove();
+  }
+});
 
 //----------------------openSearch--------------
 if (openSearch) {
