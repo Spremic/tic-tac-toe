@@ -57,7 +57,16 @@ io.on("connection", (socket) => {
       chalenger: data.izazivac,
       player: data.player,
       poruka: data.poruka,
+      mailChalanger: data.mailIzazivaca,
     });
+    console.log(data.poruka);
+  });
+
+  socket.on("new_acceptCL", (data) => {
+    io.sockets.emit("new_acceptSR", {
+      chalengerMail: data.challanger,
+    });
+    console.log(data.challanger);
   });
 });
 
@@ -333,5 +342,16 @@ app.post("/api/sendRequest", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/api/nameChalanger", async (req, res) => {
+  const { player1 } = req.body;
+  try {
+    const findPlayer1 = await user.findOne({ email: player1 });
+    let namePlayer1 = findPlayer1.name;
+    return res.json({ status: "ok", namePlayer1 });
+  } catch (err) {
+    console.log(err);
   }
 });

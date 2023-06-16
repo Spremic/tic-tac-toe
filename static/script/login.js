@@ -1,6 +1,6 @@
 let registerBTN = document.querySelector("span");
 const forma = document.getElementById("formLogin");
-
+alert ("The game is under construction")
 //funkcija koja uloguje korisnika
 forma.addEventListener("submit", login);
 async function login(e) {

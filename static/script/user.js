@@ -10,8 +10,6 @@ const socket = io.connect("http://localhost:3000");
 
 window.addEventListener("load", dynamicLoad);
 async function dynamicLoad(e) {
-  e.preventDefault();
-
   const result = await fetch("./api/dynamicLoad", {
     method: "POST",
     headers: {
@@ -59,7 +57,6 @@ async function writeFriends(e) {
     if (resultFriends.status === "ok") {
       let nameFriend = resultFriends.name;
       let email = resultFriends.email;
-      console.log(email);
 
       writeallFriends.innerHTML += ` <div class="user userDesing">
       <div class="freindsIMG">
@@ -324,7 +321,7 @@ async function dynmicLoadLoginUser(e) {
   if (fetchToken.status === "ok") {
     let sendRequestUser = fetchToken.email;
     let emailSend = e;
-    console.log(sendRequestUser);
+
     sendRequest(sendRequestUser, emailSend);
   }
 }
@@ -375,31 +372,45 @@ async function challenge(e) {
     let player2 = parentParent.querySelector(".userEmail").innerHTML;
 
     let player1 = jwtEmail.innerHTML;
-    sendChalange(player1, player2.trim());
+    sendChalange(player1.trim(), player2.trim());
   }
 }
 
 //ako je plejer test plejer 2 jednak sa plejer 2 ti uradi tjj prosledi mu ALERt
-
 let acceptChalangeContainer = document.querySelector(".acceptChalange");
 async function sendChalange(player1, player2) {
   let testPlayer2 = jwtEmail.innerHTML;
-  socket.emit("new_challangeCL", {
-    izazivac: player1,
-    player: player2,
-    poruka: "Izazvao Vas je:",
-  });
-  socket.on("new_challangeSR", (data) => {
-    if (data.player === testPlayer2) {
-      // alert(`${data.poruka} ${data.chalenger}`);
-      acceptChalangeContainer.innerHTML = `<div class="acceptChalangeContainer">
+  const result = await fetch("/api/nameChalanger", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      player1,
+    }),
+  }).then((response) => response.json());
+  if (result.status === "ok") {
+    let test = document.querySelector(".challange");
+
+    socket.emit("new_challangeCL", {
+      izazivac: result.namePlayer1,
+      player: player2,
+      mailIzazivaca: player1,
+      poruka: "Izazvao Vas je:",
+    });
+    socket.on("new_challangeSR", (data) => {
+      if (data.player === testPlayer2) {
+        // alert(`${data.poruka} ${data.chalenger}`);
+        acceptChalangeContainer.innerHTML = `<div class="acceptChalangeContainer">
       <div class="chalangeIMG">
         <img src="149071.png" alt="SLika izazivaca" />
       </div>
       <div class="nameChallenger">
         <div class="name">
           <p>${data.poruka} ${data.chalenger} </p>
-          <p class="userEmail">pero</p>
+          <p class="userEmail">${data.mailChalanger}</p>
+          <p class="player2Mail">${testPlayer2} </p>
+
         </div>
       </div>
       <div class="flexContainer">
@@ -408,18 +419,36 @@ async function sendChalange(player1, player2) {
       </div>
     </div>
       `;
-    }
-  });
+      }
+    });
+  }
 }
 
 //accept and reject
-acceptChalangeContainer.addEventListener("click", (e) => {
+acceptChalangeContainer.addEventListener("click", async (e) => {
   let event = e.target;
 
   //accept
   if (event.classList.contains("acceptChalangeBTN")) {
-    location.href = "/game";
+    let parent = event.parentNode.parentNode;
+    let player1Email = parent
+      .querySelector(".nameChallenger .name .userEmail ")
+      .innerHTML.trim();
+    console.log(player1Email);
+    let test = document.querySelector(".player2Mail").innerHTML.trim();
+    console.log(test);
+    socket.emit("new_acceptCL", {
+      challanger: player1Email,
+    });
+    socket.on("new_acceptSR", (data) => {
+      if (data.chalengerMail === jwtEmail.innerHTML.trim()) {
+        location.href = "/game";
+      }
+    });
   }
+
+  //function accept for challanger
+  function redirectChalanger() {}
 
   //reject
   if (event.classList.contains("deleteChalangeBTN")) {
@@ -437,3 +466,23 @@ if (openSearch) {
   openSearch.addEventListener("click", toggleSearchInputStyle);
   searchInput.style.display = "none";
 }
+
+//ovaj kod ti je jer imas gore problem najverovatnije zbog dinamickog ucitavanja, ne reaguje prvi put na klik na izazov dok serverska strana reaguje odmah. najverovatnije se desava jer js dinamicki ucitava podatak, porbati sa ovim kodom verovatno ce raditi
+
+// // Pronalazi element sa klasom 'acceptBTN'
+// const acceptBtn = document.querySelector('.acceptBTN');
+
+// // Proverava da li postoji 'acceptBTN'
+// if (acceptBtn) {
+//   // Funkcija koja se poziva kada se klikne na 'acceptBTN'
+//   const acceptChallange = () => {
+//     // Proverava da li je vrednost 'chalangerMail' jednaka 'jwtEmail'
+//     if (data.chalangerMail === jwtEmail.innerHTML.trim()) {
+//       // Redirektuje na stranicu '/game'
+//       location.href = '/game';
+//     }
+//   };
+
+//   // Dodaje event listener koji će pozvati funkciju 'acceptChallange' kada se klikne na 'acceptBTN'
+//   acceptBtn.addEventListener('click', acceptChallange);
+// }
